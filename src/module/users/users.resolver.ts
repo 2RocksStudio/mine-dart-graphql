@@ -3,14 +3,8 @@ import { UsersService } from './users.service';
 import { User } from '../../database/entities/user/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import {
-  forwardRef,
-  Inject,
-  UnauthorizedException,
-  UseGuards,
-} from '@nestjs/common';
+import { UnauthorizedException, UseGuards } from '@nestjs/common';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
-import { LocalAuthGuard } from '../auth/guards/local-auth.guard';
 import { UserLoginInput } from './dto/user-login.input';
 import { AuthService } from '../auth/auth.service';
 import { LoginResponse } from './dto/login-response';
