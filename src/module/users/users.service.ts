@@ -1,32 +1,70 @@
 import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
+import { plainToClass } from 'class-transformer';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
-import { User } from './entities/user.entity';
+import { User } from '../../database/entities/user/user.entity';
+import { UserRepository } from '../../database/repositories/user.repository';
 
 @Injectable()
 export class UsersService {
-  constructor(@Inject(Logger) private readonly logger: LoggerService) {}
+  constructor(
+    @Inject(Logger) private readonly logger: LoggerService,
+    private usersRepository: UserRepository,
+  ) {}
   create(createUserInput: CreateUserInput): User {
-    return { exampleField: createUserInput.exampleField };
+    const dummy: User = plainToClass(User, {});
+    return dummy;
   }
 
-  findAll(): [User] {
-    this.logger.log(`[${UsersService.name}] findAll()`, [{ exampleField: 1 }]);
-    return [{ exampleField: 1 }];
+  async findAll(): Promise<User[]> {
+    this.logger.log(`[${UsersService.name}] findAll()`);
+    const users: User[] = await this.usersRepository.find();
+    return users;
   }
 
   findOne(id: number): User {
     this.logger.log(`[${UsersService.name}] findOne()`);
-    return { exampleField: id };
+    const dummy: User = plainToClass(User, {
+      username: '',
+      password: '',
+      email: '',
+      fcmToken: '',
+      status: '',
+      regFrom: '',
+    });
+
+    return dummy;
   }
 
   update(id: number, updateUserInput: UpdateUserInput): User {
     this.logger.log(`[${UsersService.name}] update()`);
-    return { exampleField: updateUserInput.id };
+    const dummy: User = plainToClass(User, {
+      username: '',
+      password: '',
+      email: '',
+      fcmToken: '',
+      status: '',
+      regFrom: '',
+    });
+
+    return dummy;
   }
 
   remove(id: number): User {
     this.logger.log(`[${UsersService.name}] remove()`);
-    return { exampleField: id };
+    const dummy: User = plainToClass(User, {
+      username: '',
+      password: '',
+      email: '',
+      fcmToken: '',
+      status: '',
+      regFrom: '',
+    });
+
+    return dummy;
+  }
+
+  findUserByUsername(username: string): Promise<User | undefined> {
+    return this.usersRepository.findUserByUsernameWithIsDeletedFalse(username);
   }
 }

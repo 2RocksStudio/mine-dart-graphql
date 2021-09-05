@@ -4,9 +4,71 @@
 
 type User {
   """
-  Example field (placeholder)
+  ID
   """
-  exampleField: Int!
+  id: ID!
+
+  """
+  isDeleted
+  """
+  isDeleted: Boolean!
+
+  """
+  createdAt
+  """
+  createdAt: String!
+
+  """
+  updatedAt
+  """
+  updatedAt: String!
+
+  """
+  version
+  """
+  version: Int!
+
+  """
+  createdBy
+  """
+  createdBy: Int!
+
+  """
+  updatedBy
+  """
+  updatedBy: Int!
+
+  """
+  username
+  """
+  username: String!
+
+  """
+  email
+  """
+  email: String!
+
+  """
+  FireBase Push Notiy Token
+  """
+  fcmToken: String!
+
+  """
+  UserStatus activated | unactivated | pending
+  """
+  status: String!
+
+  """
+  UserRegistrationFrom username | apple | google | facebook
+  """
+  regFrom: String!
+}
+
+type LoginResponse {
+  """
+  Access Token
+  """
+  accessToken: String!
 }
 
 type Query {
@@ -16,6 +78,7 @@ type Query {
 
 type Mutation {
   createUser(createUserInput: CreateUserInput!): User!
+  login(userLoginInput: UserLoginInput!): LoginResponse!
   updateUser(updateUserInput: UpdateUserInput!): User!
   removeUser(id: Int!): User!
 }
@@ -25,6 +88,11 @@ input CreateUserInput {
   Example field (placeholder)
   """
   exampleField: Int!
+}
+
+input UserLoginInput {
+  username: String!
+  password: String!
 }
 
 input UpdateUserInput {

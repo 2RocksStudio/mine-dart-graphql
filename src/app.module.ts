@@ -6,10 +6,12 @@ import { UsersModule } from './module/users/users.module';
 import { ApolloServerPluginLandingPageLocalDefault } from 'apollo-server-core';
 import { ConfigModule } from '@nestjs/config';
 import appConfig from './config/app.config';
+import { TypeOrmModule } from '@nestjs/typeorm';
+import { DBConfig } from './config/db.config';
+import { AuthModule } from './module/auth/auth.module';
 
 @Module({
   imports: [
-    // TypeOrmModule.forRoot(new DBConfig().config),
     ConfigModule.forRoot({
       isGlobal: true,
       load: [appConfig],
@@ -20,7 +22,9 @@ import appConfig from './config/app.config';
       playground: false,
       plugins: [ApolloServerPluginLandingPageLocalDefault()],
     }),
+    TypeOrmModule.forRoot(new DBConfig().config),
     UsersModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],
