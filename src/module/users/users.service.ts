@@ -3,7 +3,7 @@ import { plainToClass } from 'class-transformer';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from '../../database/entities/user/user.entity';
-import { UserRepository } from '../../database/repositories/user.repository';
+import { UserRepository } from '../../database/repositories/user/user.repository';
 
 @Injectable()
 export class UsersService {

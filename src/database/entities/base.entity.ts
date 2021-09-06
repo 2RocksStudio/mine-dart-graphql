@@ -17,12 +17,12 @@ export abstract class BaseEntity {
   @Field(() => Boolean, { description: 'isDeleted' })
   isDeleted: boolean;
 
-  @CreateDateColumn({ name: 'created_at' })
-  @Field(() => String, { description: 'createdAt' })
+  @CreateDateColumn({ name: 'created_at', type: 'timestamp' })
+  @Field({ description: 'createdAt' })
   createdAt: Date;
 
-  @UpdateDateColumn({ name: 'updated_at' })
-  @Field(() => String, { description: 'updatedAt' })
+  @UpdateDateColumn({ name: 'updated_at', type: 'timestamp' })
+  @Field({ description: 'updatedAt' })
   updatedAt: Date;
 
   @VersionColumn()
@@ -30,10 +30,10 @@ export abstract class BaseEntity {
   version: number;
 
   @Column({ nullable: true, name: 'created_by', unique: false })
-  @Field(() => Int, { description: 'createdBy' })
-  createdBy: number;
+  @Field(() => Int, { description: 'createdBy', nullable: true })
+  createdBy?: number;
 
   @Column({ nullable: true, name: 'updated_by', unique: false })
-  @Field(() => Int, { description: 'updatedBy' })
-  updatedBy: number;
+  @Field(() => Int, { description: 'updatedBy', nullable: true })
+  updatedBy?: number;
 }

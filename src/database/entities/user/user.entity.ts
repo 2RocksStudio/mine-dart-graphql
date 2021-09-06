@@ -1,6 +1,7 @@
-import { Column, Entity } from 'typeorm';
+import { Column, Entity, OneToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
+import { UserInfo } from './userInfo.entity';
 
 export enum UserStatus {
   activated = 'activated',
@@ -30,7 +31,10 @@ export class User extends BaseEntity {
   email: string;
 
   @Column({ nullable: true, name: 'fcm_token' })
-  @Field(() => String, { description: 'FireBase Push Notiy Token' })
+  @Field(() => String, {
+    nullable: true,
+    description: 'FireBase Push Notiy Token',
+  })
   fcmToken: string;
 
   @Column({ type: 'enum', enum: UserStatus, default: UserStatus.unactivated })
@@ -55,4 +59,11 @@ export class User extends BaseEntity {
   emailToLowerCase() {
     this.email = this.email.toLowerCase();
   }
+
+  @OneToOne(() => UserInfo, (userinfo) => userinfo.user, {
+    cascade: true,
+    eager: true,
+  })
+  @Field()
+  info: UserInfo;
 }
