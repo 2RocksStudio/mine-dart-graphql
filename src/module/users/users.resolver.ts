@@ -1,4 +1,12 @@
-import { Resolver, Query, Mutation, Args, Int } from '@nestjs/graphql';
+import {
+  Resolver,
+  Query,
+  Mutation,
+  Args,
+  Int,
+  Parent,
+  ResolveField,
+} from '@nestjs/graphql';
 import { UsersService } from './users.service';
 import { User } from '../../database/entities/user/user.entity';
 import { CreateUserInput } from './dto/create-user.input';
@@ -8,6 +16,7 @@ import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
 import { UserLoginInput } from './dto/user-login.input';
 import { AuthService } from '../auth/auth.service';
 import { LoginResponse } from './dto/login-response';
+import { UserScore } from '../../database/entities/user/user.score.entity';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -55,5 +64,11 @@ export class UsersResolver {
   @UseGuards(GqlAuthGuard)
   removeUser(@Args('id', { type: () => Int }) id: number) {
     return this.usersService.remove(id);
+  }
+
+  @ResolveField('userScores', () => [UserScore])
+  async userScores(@Parent() user: User) {
+    const { id } = user;
+    return await this.usersService.findUserScoresById(id);
   }
 }

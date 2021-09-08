@@ -59,6 +59,116 @@ A date-time string at UTC, such as 2019-12-03T09:54:33Z, compliant with the date
 """
 scalar DateTime
 
+type Score {
+  """
+  ID
+  """
+  id: ID!
+
+  """
+  isDeleted
+  """
+  isDeleted: Boolean!
+
+  """
+  createdAt
+  """
+  createdAt: DateTime!
+
+  """
+  updatedAt
+  """
+  updatedAt: DateTime!
+
+  """
+  version
+  """
+  version: Int!
+
+  """
+  createdBy
+  """
+  createdBy: Int
+
+  """
+  updatedBy
+  """
+  updatedBy: Int
+
+  """
+  score
+  """
+  score: Int!
+
+  """
+  type
+  """
+  type: String!
+
+  """
+  title
+  """
+  title: String!
+
+  """
+  description
+  """
+  description: String
+
+  """
+  extra
+  """
+  extra: String
+}
+
+type UserScore {
+  """
+  ID
+  """
+  id: ID!
+
+  """
+  isDeleted
+  """
+  isDeleted: Boolean!
+
+  """
+  createdAt
+  """
+  createdAt: DateTime!
+
+  """
+  updatedAt
+  """
+  updatedAt: DateTime!
+
+  """
+  version
+  """
+  version: Int!
+
+  """
+  createdBy
+  """
+  createdBy: Int
+
+  """
+  updatedBy
+  """
+  updatedBy: Int
+
+  """
+  userId
+  """
+  userId: Int!
+
+  """
+  scoreId
+  """
+  scoreId: Int!
+  score: Score!
+}
+
 type User {
   """
   ID
@@ -120,6 +230,7 @@ type User {
   """
   regFrom: String!
   info: UserInfo!
+  userScores: [UserScore!]!
 }
 
 type LoginResponse {

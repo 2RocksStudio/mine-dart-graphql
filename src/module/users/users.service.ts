@@ -4,12 +4,15 @@ import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
 import { User } from '../../database/entities/user/user.entity';
 import { UserRepository } from '../../database/repositories/user/user.repository';
+import { UserScoreRepository } from '../../database/repositories/user/user.score.repository';
+import { UserScore } from '../../database/entities/user/user.score.entity';
 
 @Injectable()
 export class UsersService {
   constructor(
     @Inject(Logger) private readonly logger: LoggerService,
     private usersRepository: UserRepository,
+    private userScoreRepository: UserScoreRepository,
   ) {}
   create(createUserInput: CreateUserInput): User {
     const dummy: User = plainToClass(User, {});
@@ -18,11 +21,12 @@ export class UsersService {
 
   async findAll(): Promise<User[]> {
     this.logger.log(`[${UsersService.name}] findAll()`);
-    const users: User[] = await this.usersRepository.find();
+    const users: User[] =
+      await this.usersRepository.findAllWithIsDeletedFalse();
     return users;
   }
 
-  findOne(id: number): User {
+  findOne(id: number | string): User {
     this.logger.log(`[${UsersService.name}] findOne()`);
     const dummy: User = plainToClass(User, {
       username: '',
@@ -36,7 +40,7 @@ export class UsersService {
     return dummy;
   }
 
-  update(id: number, updateUserInput: UpdateUserInput): User {
+  update(id: number | string, updateUserInput: UpdateUserInput): User {
     this.logger.log(`[${UsersService.name}] update()`);
     const dummy: User = plainToClass(User, {
       username: '',
@@ -50,7 +54,7 @@ export class UsersService {
     return dummy;
   }
 
-  remove(id: number): User {
+  remove(id: number | string): User {
     this.logger.log(`[${UsersService.name}] remove()`);
     const dummy: User = plainToClass(User, {
       username: '',
@@ -66,5 +70,11 @@ export class UsersService {
 
   findUserByUsername(username: string): Promise<User | undefined> {
     return this.usersRepository.findUserByUsernameWithIsDeletedFalse(username);
+  }
+
+  findUserScoresById(
+    userId: string | number,
+  ): Promise<UserScore[] | undefined> {
+    return this.userScoreRepository.findByUserIdWithIsDeletedFalse(userId);
   }
 }

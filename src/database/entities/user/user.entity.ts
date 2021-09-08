@@ -1,7 +1,8 @@
-import { Column, Entity, OneToOne } from 'typeorm';
+import { Column, Entity, OneToMany, OneToOne } from 'typeorm';
 import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
-import { UserInfo } from './userInfo.entity';
+import { UserInfo } from './user.info.entity';
+import { UserScore } from './user.score.entity';
 
 export enum UserStatus {
   activated = 'activated',
@@ -41,7 +42,7 @@ export class User extends BaseEntity {
   @Field(() => String, {
     description: `UserStatus ${Object.keys(UserStatus).join(' | ')}`,
   })
-  status: string;
+  status: UserStatus;
 
   @Column({
     type: 'enum',
@@ -54,7 +55,7 @@ export class User extends BaseEntity {
       ' | ',
     )}`,
   })
-  regFrom: string;
+  regFrom: UserRegistrationFrom;
 
   emailToLowerCase() {
     this.email = this.email.toLowerCase();
@@ -66,4 +67,10 @@ export class User extends BaseEntity {
   })
   @Field()
   info: UserInfo;
+
+  @OneToMany(() => UserScore, (userScore) => userScore.user, {
+    cascade: true,
+  })
+  @Field(() => [UserScore])
+  userScores: UserScore[];
 }
