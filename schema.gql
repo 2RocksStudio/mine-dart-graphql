@@ -169,6 +169,59 @@ type UserScore {
   score: Score!
 }
 
+type Post {
+  """
+  ID
+  """
+  id: ID!
+
+  """
+  isDeleted
+  """
+  isDeleted: Boolean!
+
+  """
+  createdAt
+  """
+  createdAt: DateTime!
+
+  """
+  updatedAt
+  """
+  updatedAt: DateTime!
+
+  """
+  version
+  """
+  version: Int!
+
+  """
+  createdBy
+  """
+  createdBy: Int
+
+  """
+  updatedBy
+  """
+  updatedBy: Int
+
+  """
+  title
+  """
+  title: String!
+
+  """
+  description
+  """
+  description: String!
+
+  """
+  isPublished
+  """
+  isPublished: Boolean!
+  author: User!
+}
+
 type User {
   """
   ID
@@ -213,7 +266,7 @@ type User {
   """
   email
   """
-  email: String!
+  email: String
 
   """
   FireBase Push Notiy Token
@@ -226,11 +279,12 @@ type User {
   status: String!
 
   """
-  UserRegistrationFrom username | apple | google | facebook
+  UserRegistrationFromEnum USERNAME | APPLE | GOOGLE | FACEBOOK
   """
   regFrom: String!
-  info: UserInfo!
+  info: UserInfo
   userScores: [UserScore!]!
+  posts: [Post!]!
 }
 
 type LoginResponse {
@@ -243,6 +297,8 @@ type LoginResponse {
 type Query {
   users: [User!]!
   user(id: Int!): User!
+  testUserDecorator: User!
+  posts: [Post!]!
 }
 
 type Mutation {
@@ -254,9 +310,26 @@ type Mutation {
 
 input CreateUserInput {
   """
-  Example field (placeholder)
+  username
   """
-  exampleField: Int!
+  username: String!
+
+  """
+  password
+  """
+  password: String!
+
+  """
+  UserRegistrationFromEnum USERNAME | APPLE | GOOGLE | FACEBOOK
+  """
+  regFrom: UserRegistrationFromEnum!
+}
+
+enum UserRegistrationFromEnum {
+  USERNAME
+  APPLE
+  GOOGLE
+  FACEBOOK
 }
 
 input UserLoginInput {
@@ -266,8 +339,18 @@ input UserLoginInput {
 
 input UpdateUserInput {
   """
-  Example field (placeholder)
+  username
   """
-  exampleField: Int
+  username: String
+
+  """
+  password
+  """
+  password: String
+
+  """
+  UserRegistrationFromEnum USERNAME | APPLE | GOOGLE | FACEBOOK
+  """
+  regFrom: UserRegistrationFromEnum
   id: Int!
 }

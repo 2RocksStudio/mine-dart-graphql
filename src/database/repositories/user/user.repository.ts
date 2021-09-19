@@ -8,7 +8,17 @@ export class UserRepository extends Repository<User> {
   constructor() {
     super();
   }
-  async findUserByUserIdWithIsDeletedFalse(userId: string): Promise<User> {
+  async createUser(user: User): Promise<User> {
+    try {
+      return await this.save(user);
+    } catch (error) {
+      throw error;
+    }
+  }
+
+  async findUserByUserIdWithIsDeletedFalse(
+    userId: number | string,
+  ): Promise<User> {
     try {
       return await this.findOne({ where: { id: userId, isDeleted: false } });
     } catch (error) {

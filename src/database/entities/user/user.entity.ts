@@ -3,6 +3,9 @@ import { ObjectType, Field } from '@nestjs/graphql';
 import { BaseEntity } from '../base.entity';
 import { UserInfo } from './user.info.entity';
 import { UserScore } from './user.score.entity';
+import { Post } from '../post/post.entity';
+
+import { UserRegistrationFromEnum } from '../../../common/enum/user.registration.from.enum';
 
 export enum UserStatus {
   activated = 'activated',
@@ -10,12 +13,12 @@ export enum UserStatus {
   pending = 'pending',
 }
 
-export enum UserRegistrationFrom {
-  username = 'username',
-  apple = 'apple',
-  google = 'google',
-  facebook = 'facebook',
-}
+// export enum UserRegistrationFrom {
+//   username = 'username',
+//   apple = 'apple',
+//   google = 'google',
+//   facebook = 'facebook',
+// }
 
 @ObjectType()
 @Entity('user')
@@ -27,8 +30,8 @@ export class User extends BaseEntity {
   @Column()
   password: string;
 
-  @Column({ unique: true })
-  @Field(() => String, { description: 'email' })
+  @Column({ unique: true, nullable: true })
+  @Field(() => String, { description: 'email', nullable: true })
   email: string;
 
   @Column({ nullable: true, name: 'fcm_token' })
@@ -46,16 +49,16 @@ export class User extends BaseEntity {
 
   @Column({
     type: 'enum',
-    enum: UserRegistrationFrom,
-    default: UserRegistrationFrom.username,
+    enum: UserRegistrationFromEnum,
+    default: UserRegistrationFromEnum.USERNAME,
     name: 'reg_from',
   })
   @Field(() => String, {
-    description: `UserRegistrationFrom ${Object.keys(UserRegistrationFrom).join(
-      ' | ',
-    )}`,
+    description: `UserRegistrationFromEnum ${Object.keys(
+      UserRegistrationFromEnum,
+    ).join(' | ')}`,
   })
-  regFrom: UserRegistrationFrom;
+  regFrom: UserRegistrationFromEnum;
 
   emailToLowerCase() {
     this.email = this.email.toLowerCase();
@@ -65,7 +68,7 @@ export class User extends BaseEntity {
     cascade: true,
     eager: true,
   })
-  @Field()
+  @Field({ nullable: true })
   info: UserInfo;
 
   @OneToMany(() => UserScore, (userScore) => userScore.user, {
@@ -73,4 +76,10 @@ export class User extends BaseEntity {
   })
   @Field(() => [UserScore])
   userScores: UserScore[];
+
+  @OneToMany(() => Post, (post) => post.author, {
+    cascade: true,
+  })
+  @Field(() => [Post])
+  posts: Post[];
 }

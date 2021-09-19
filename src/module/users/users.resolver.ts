@@ -17,6 +17,7 @@ import { UserLoginInput } from './dto/user-login.input';
 import { AuthService } from '../auth/auth.service';
 import { LoginResponse } from './dto/login-response';
 import { UserScore } from '../../database/entities/user/user.score.entity';
+import { UserDecorator } from '../../common/decorator/user.decorator';
 
 @Resolver(() => User)
 export class UsersResolver {
@@ -27,7 +28,12 @@ export class UsersResolver {
 
   @Mutation(() => User)
   createUser(@Args('createUserInput') createUserInput: CreateUserInput) {
-    return this.usersService.create(createUserInput);
+    try {
+      return this.usersService.create(createUserInput);
+    } catch (error) {
+      console.log(error);
+      return '';
+    }
   }
 
   @Mutation(() => LoginResponse)
@@ -70,5 +76,18 @@ export class UsersResolver {
   async userScores(@Parent() user: User) {
     const { id } = user;
     return await this.usersService.findUserScoresById(id);
+  }
+
+  // @ResolveField('userPosts', () => [Post])
+  // async userPosts(@Parent() user: User) {
+  //   const { id } = user;
+  //   return await this.usersService.findUserScoresById(id);
+  // }
+
+  @Query(() => User, { name: 'testUserDecorator' })
+  @UseGuards(GqlAuthGuard)
+  test(@UserDecorator() user: User) {
+    console.log(user);
+    return user;
   }
 }

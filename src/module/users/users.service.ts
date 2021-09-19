@@ -1,4 +1,10 @@
-import { Inject, Injectable, Logger, LoggerService } from '@nestjs/common';
+import {
+  HttpException,
+  Inject,
+  Injectable,
+  Logger,
+  LoggerService,
+} from '@nestjs/common';
 import { plainToClass } from 'class-transformer';
 import { CreateUserInput } from './dto/create-user.input';
 import { UpdateUserInput } from './dto/update-user.input';
@@ -6,6 +12,7 @@ import { User } from '../../database/entities/user/user.entity';
 import { UserRepository } from '../../database/repositories/user/user.repository';
 import { UserScoreRepository } from '../../database/repositories/user/user.score.repository';
 import { UserScore } from '../../database/entities/user/user.score.entity';
+import { ResponceCode } from '../../common/response/response.code';
 
 @Injectable()
 export class UsersService {
@@ -14,9 +21,25 @@ export class UsersService {
     private usersRepository: UserRepository,
     private userScoreRepository: UserScoreRepository,
   ) {}
-  create(createUserInput: CreateUserInput): User {
-    const dummy: User = plainToClass(User, {});
-    return dummy;
+  async create(createUserInput: CreateUserInput): Promise<User> {
+    const newUser: User = new User();
+    newUser.username = createUserInput.username;
+    newUser.password = createUserInput.password;
+    newUser.regFrom = createUserInput.regFrom;
+    const checkExist: User =
+      await this.usersRepository.findUserByUsernameWithIsDeletedFalse(
+        createUserInput.username,
+      );
+    if (checkExist) {
+      this.logger.log(`[${UsersService.name}] create() username already exist`);
+      throw new HttpException(
+        ResponceCode.STATUS_2001_USER_USERNAME_ALREADY_EXIST.message,
+        ResponceCode.STATUS_2001_USER_USERNAME_ALREADY_EXIST.code,
+      );
+    }
+    const user: User = await this.usersRepository.createUser(newUser);
+
+    return user;
   }
 
   async findAll(): Promise<User[]> {
@@ -26,18 +49,12 @@ export class UsersService {
     return users;
   }
 
-  findOne(id: number | string): User {
+  async findOne(id: number | string): Promise<User> {
     this.logger.log(`[${UsersService.name}] findOne()`);
-    const dummy: User = plainToClass(User, {
-      username: '',
-      password: '',
-      email: '',
-      fcmToken: '',
-      status: '',
-      regFrom: '',
-    });
+    const user: User =
+      await this.usersRepository.findUserByUserIdWithIsDeletedFalse(id);
 
-    return dummy;
+    return user;
   }
 
   update(id: number | string, updateUserInput: UpdateUserInput): User {

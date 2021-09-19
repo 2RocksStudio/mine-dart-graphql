@@ -7,6 +7,7 @@ import {
 } from 'nest-winston';
 import * as winston from 'winston';
 import { AppModule } from './app.module';
+import { HttpExceptionFilter } from './common/filters/gql-filters';
 
 const winstonLogger = WinstonModule.createLogger({
   transports: [
@@ -26,16 +27,19 @@ const winstonLogger = WinstonModule.createLogger({
 
 async function bootstrap() {
   const app = await NestFactory.create(AppModule, {
+    // logger: false,
     logger: winstonLogger, //Logger Replace
   });
   const configService: ConfigService = app.get(ConfigService); //Get Config Service
   const logger: Logger = app.get(Logger);
+  // app.useLogger(winstonLogger);
   logger.log(
     `[Staring] App Name : ${configService.get<string>('app.pathPrefix')}`,
   );
   logger.log(
     `[Staring] Port Listen : ${configService.get<number>('app.appPort')}`,
   );
+  app.useGlobalFilters(new HttpExceptionFilter());
   await app.listen(configService.get<number>('app.appPort'));
 }
 bootstrap();

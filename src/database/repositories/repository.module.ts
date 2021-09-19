@@ -3,6 +3,7 @@ import { TypeOrmModule } from '@nestjs/typeorm';
 import { UserRepository } from './user/user.repository';
 import { UserScoreRepository } from './user/user.score.repository';
 import { UserInfoRepository } from './user/user.info.repository';
+import { PostRepository } from './post/post.repository';
 
 @Module({
   imports: [
@@ -10,6 +11,7 @@ import { UserInfoRepository } from './user/user.info.repository';
       UserRepository,
       UserInfoRepository,
       UserScoreRepository,
+      PostRepository,
     ]),
   ],
   providers: [],
