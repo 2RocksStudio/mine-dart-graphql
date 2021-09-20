@@ -1,5 +1,13 @@
 import { UseGuards } from '@nestjs/common';
-import { Parent, Query, ResolveField, Resolver } from '@nestjs/graphql';
+import {
+  Args,
+  Int,
+  Parent,
+  Query,
+  ResolveField,
+  Resolver,
+} from '@nestjs/graphql';
+import { PaginationInput } from '../../common/types/pagination.input';
 import { Post } from '../../database/entities/post/post.entity';
 import { User } from '../../database/entities/user/user.entity';
 import { GqlAuthGuard } from '../auth/guards/gql-auth.guard';
@@ -15,8 +23,10 @@ export class PostResolver {
 
   @Query(() => [Post], { name: 'posts' })
   @UseGuards(GqlAuthGuard)
-  findAll() {
-    return this.postService.findAll();
+  findAll(@Args('pagination', { nullable: true }) pagination: PaginationInput) {
+    const { limit, page } = pagination || {};
+    console.log(limit, page);
+    return this.postService.findAllWithIsDeletedFalse({ limit, page });
   }
 
   @ResolveField('author', () => User)

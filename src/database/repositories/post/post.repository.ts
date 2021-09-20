@@ -8,7 +8,7 @@ export class PostRepository extends Repository<Post> {
   constructor() {
     super();
   }
-  async findAllWithIsDeletedFalse(): Promise<Post[]> {
+  async findAllWithIsDeletedFalse({ limit, page }): Promise<Post[]> {
     try {
       return await this.find();
     } catch (error) {

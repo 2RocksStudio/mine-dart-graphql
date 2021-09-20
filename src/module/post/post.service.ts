@@ -8,9 +8,12 @@ export class PostService {
     @Inject(Logger) private readonly logger: LoggerService,
     private readonly postRepository: PostRepository,
   ) {}
-  async findAll(): Promise<Post[]> {
+  async findAllWithIsDeletedFalse({ limit, page }): Promise<Post[]> {
     this.logger.log(`[${PostService.name}] findAll()`);
-    const posts: Post[] = await this.postRepository.findAllWithIsDeletedFalse();
+    const posts: Post[] = await this.postRepository.findAllWithIsDeletedFalse({
+      limit,
+      page,
+    });
     return posts;
   }
 }

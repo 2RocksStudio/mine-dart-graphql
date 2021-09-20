@@ -298,7 +298,12 @@ type Query {
   users: [User!]!
   user(id: Int!): User!
   testUserDecorator: User!
-  posts: [Post!]!
+  posts(pagination: PaginationInput): [Post!]!
+}
+
+input PaginationInput {
+  page: Int
+  limit: Int
 }
 
 type Mutation {
